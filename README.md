@@ -1,2 +1,2 @@
-# crossbowproject
-Implementation of Unity 3D physics on a crossbow
+# solarsystemproject
+Implementation of Unity 3D physics on the solar system
