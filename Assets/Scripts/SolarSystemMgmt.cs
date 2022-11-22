@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SolarSystemMgmt : MonoBehaviour
 {
-    readonly float G = 200f; // Constante universelle de gravitation augmentée pour rendre la simulation plus rapide
+    public float G; // Constante universelle de gravitation augmentée pour rendre la simulation plus rapide
     GameObject[] bodies; // Corps presents dans la scene
 
     // Start is called before the first frame update
