@@ -25,42 +25,7 @@ public class SolarSystemMgmt : MonoBehaviour
 
     private void FixedUpdate()
     {
-        ApplyGravityToBodies();
-    }
-
-    /*
-     * Applique les forces de gravités 
-     * sur les planètes/étoiles entre elles
-     */
-    void ApplyGravityToBodies()
-    {
-        foreach (GameObject corpsA in bodies)
-        {
-            foreach (GameObject corpsB in bodies)
-            {
-                if (!corpsA.Equals(corpsB))
-                {
-                    // On récupère les masses des 2 corps
-                    float mA = corpsA.GetComponent<Rigidbody>().mass;
-                    float mB = corpsB.GetComponent<Rigidbody>().mass;
-
-                    // On récupère la distance entre les 2 corps
-                    float d = Vector3.Distance(corpsA.transform.position, corpsB.transform.position);
-
-                    // On récupère le vecteur à utiliser pour appliquer la force (en direction de l'objet A)
-                    Vector3 dirVector = (corpsB.transform.position - corpsA.transform.position).normalized;
-
-                    /* On applique la loi universelle de la gravitation 
-                     * en tant que force sur le corps A selon la formule,
-                     *
-                     *      F = G * m1*m2
-                     *              -----
-                     *               d^2
-                    */
-                    corpsA.GetComponent<Rigidbody>().AddForce(dirVector * (G * (mA * mB) / (d * d)));
-                }
-            }
-        }
+        ApplyPhysicsToBodies();
     }
 
     void ApplyInitialVelocityToBodies()
@@ -91,6 +56,83 @@ public class SolarSystemMgmt : MonoBehaviour
                 }
             }
         }
-    }    
+    }
+
+    /*
+     * Applique la physique sur les corps
+     */
+    void ApplyPhysicsToBodies()
+    {
+        foreach (GameObject corpsA in bodies)
+        {
+            foreach (GameObject corpsB in bodies)
+            {
+                if (!corpsA.Equals(corpsB))
+                {
+
+                    // On applique les forces de gravitation
+                    ApplyGravity(corpsA, corpsB);
+
+                    // On applique la rotation sous forme de vitesse angulaire
+                    ApplyAngularVelocity(corpsA);
+                }
+            }
+        }
+    }
+
+    void ApplyGravity(GameObject bodyA, GameObject bodyB)
+    {
+        // On récupère les masses des 2 corps
+        float mA = bodyA.GetComponent<Rigidbody>().mass;
+        float mB = bodyB.GetComponent<Rigidbody>().mass;
+
+        // On récupère la distance entre les 2 corps
+        float d = Vector3.Distance(bodyA.transform.position, bodyB.transform.position);
+
+        // On récupère le vecteur à utiliser pour appliquer la force (en direction de l'objet A)
+        Vector3 dirVector = (bodyB.transform.position - bodyA.transform.position).normalized;
+
+        /* On applique la loi universelle de la gravitation 
+         * en tant que force sur le corps A selon la formule,
+         *
+         *      F = G * m1*m2
+         *              -----
+         *               d^2
+        */
+        bodyA.GetComponent<Rigidbody>().AddForce(dirVector * (G * (mA * mB) / (d * d)));
+    }
+
+    void ApplyAngularVelocity(GameObject body)
+    {
+        /* On applique la formule de rotation sur 
+        * le corps (vitesse angulaire) selon la formule,
+        * 
+        *     W = 2 * PI
+        *         ------
+        *         P / 3600
+        */
+        body.transform.Rotate(Vector3.up * ((Mathf.PI * 2) / GetRotationPeriodInHours(body.name)));
+    }
+
+
+
+    float GetRotationPeriodInHours(string name)
+    {
+        float period = 0;
+
+        switch(name)
+        {
+            case "Earth":
+                period = 24;
+                break;
+            case "Moon":
+                period = 28 * 24;
+                break;
+            default:
+                period = 24;
+                break;
+        }
+        return period;
+    }
 
 }
