@@ -7,17 +7,19 @@ using UnityEngine.UI;
 using UnityEngine.Windows;
 using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
-public class SolarSystemMgmt : MonoBehaviour
+public class SolarSystemManager : MonoBehaviour
 {
     // Lambda functions
     Func<int, int> DAYS_TO_HOURS = x => x * 24;
 
-    // Variables
+    // Public Variables
     public float G; // Constante universelle de gravitation augmentee pour rendre la simulation plus rapide
+    public Text textDays;
+    public Text textHours;
+    public Text textYears;
+
+    // Local Variables
     GameObject[] bodies; // Corps presents dans la scene
-    Text textDays;
-    Text textHours;
-    Text textYears;
 
     // Local Variables for Test
     int elapsedHours = 0;
@@ -28,11 +30,6 @@ public class SolarSystemMgmt : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // On recupere les textes
-        textDays = GameObject.Find("Days").GetComponent<Text>();
-        textHours = GameObject.Find("Hours").GetComponent<Text>();
-        textYears = GameObject.Find("Years").GetComponent<Text>();
-
         // On recupere tous les corps du systeme solaire
         bodies = GameObject.FindGameObjectsWithTag("Bodies");
 

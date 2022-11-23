@@ -17,4 +17,9 @@ public class CameraManager : MonoBehaviour
     {
         transform.position = Target.position + offset;
     }
+
+    public void setBodyToFollow(Transform _target)
+    {
+        Target = _target;
+    }
 }
