@@ -16,6 +16,7 @@ public class GUIManager : MonoBehaviour
 
     // Local Variables
     GameObject[] bodies; // Corps presents dans la scene
+    GameObject curBody;
     List<string> planetsList;
 
 
@@ -58,7 +59,8 @@ public class GUIManager : MonoBehaviour
         {
             if(body.name.Equals(dropdown.options[dropdown.value].text))
             {
-                cameraManager.setBodyToFollow(body.transform);
+                curBody = body;
+                cameraManager.setBodyToFollow(curBody.transform);
                 break;
             }
         }
