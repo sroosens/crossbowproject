@@ -10,22 +10,13 @@ using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 public class SolarSystemManager : MonoBehaviour
 {
     // Lambda functions
-    Func<int, int> DAYS_TO_HOURS = x => x * 24;
+    static Func<int, int> DAYS_TO_HOURS = x => x * 24;
 
     // Public Variables
     public float G; // Constante universelle de gravitation augmentee pour rendre la simulation plus rapide
-    public Text textDays;
-    public Text textHours;
-    public Text textYears;
 
     // Local Variables
     GameObject[] bodies; // Corps presents dans la scene
-
-    // Local Variables for Test
-    int elapsedHours = 0;
-    int elapsedDays = 0;
-    int elapsedYears = 0;
-    bool hourReached = false;
 
     // Start is called before the first frame update
     void Start()
@@ -46,7 +37,6 @@ public class SolarSystemManager : MonoBehaviour
     private void FixedUpdate()
     {
         ApplyPhysicsToBodies();
-        UpdateTimePassed();
     }
 
     /*
@@ -144,63 +134,10 @@ public class SolarSystemManager : MonoBehaviour
         body.transform.Rotate(Vector3.up * ((Mathf.PI * 2) / GetRotationPeriodInHours(body.name)));
     }
 
-    void UpdateTimePassed()
-    {
-        foreach (GameObject body in bodies)
-        {
-            if (body.name.Equals("Earth")) //Test uniquement sur la Terre, faudrait que ça soit lie au corps qu'on regarde
-            {
-                // On recupere l'angle de rotation actuel
-                float curAngleDeg = Mathf.Abs(body.transform.eulerAngles.y);
-
-                // On recupere le temps necessaire au corps pour effectuer
-                // une rotation sur lui même
-                float rotationPeriodHours = GetRotationPeriodInHours("Earth");
-
-                // On recupere le temps necessaire au corps pour effectuer
-                // une revolution autour du soleil
-                float orbitalPeriodDays = GetOrbitalPeriodInDays("Earth");
-
-                // On teste si l'angle actuel est equivalent a 1 heure terrestre
-                // passee sur le corps en fonction de son temps de revolution
-                if ( (curAngleDeg % (360 / rotationPeriodHours)) > 1)
-                {
-                    hourReached = false;
-                }
-                if ( (curAngleDeg % (360 / rotationPeriodHours) < 1) && !hourReached)
-                {
-                    elapsedHours += 1;
-                    hourReached = true;
-                }
-
-                // 1 jour = 1 rotation complete du corps
-                if (elapsedHours > rotationPeriodHours)
-                {
-                    elapsedHours = 0;
-                    elapsedDays += 1;
-                }
-
-                // 1 an = 1 revolution complete du corps autour du soleil
-                if (elapsedDays > orbitalPeriodDays)
-                {
-                    elapsedDays = 0;
-                    elapsedYears += 1;
-                }
-
-                // On met a jour l'affichage
-                textDays.text = "Days: " + elapsedDays;
-                textHours.text = "Hours: " + elapsedHours;
-                textYears.text = "Years: " + elapsedYears;
-            }
-        }
-    }
-
-
-
     /*
      * Obtient la periode de rotation du corps en heures
      */
-    float GetRotationPeriodInHours(string name)
+    static public float GetRotationPeriodInHours(string name)
     {
         float periodHours = 0;
 
@@ -246,7 +183,7 @@ public class SolarSystemManager : MonoBehaviour
     /*
      * Obtient la periode de revolution autour du soleil en jours
      */
-    int GetOrbitalPeriodInDays(string name)
+    static public int GetOrbitalPeriodInDays(string name)
     {
         int periodDays = 0;
 
