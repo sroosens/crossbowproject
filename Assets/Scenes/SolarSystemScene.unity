@@ -1870,9 +1870,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   G: 0.055
-  textDays: {fileID: 1171342380}
-  textHours: {fileID: 537305388}
-  textYears: {fileID: 1623326573}
 --- !u!4 &1226329256
 Transform:
   m_ObjectHideFlags: 0
@@ -2159,6 +2156,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dropDownPlanets: {fileID: 463787486}
   cameraManager: {fileID: 2023076161}
+  textDays: {fileID: 1171342380}
+  textHours: {fileID: 537305388}
+  textYears: {fileID: 1623326573}
 --- !u!1 &1623326571
 GameObject:
   m_ObjectHideFlags: 0
