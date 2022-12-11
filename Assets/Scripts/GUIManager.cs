@@ -13,6 +13,8 @@ public class GUIManager : MonoBehaviour
     public Text textDays;
     public Text textHours;
     public Text textYears;
+    public GameObject spaceship;
+    
 
     // Local Variables
     GameObject[] bodies; // Corps presents dans la scene
@@ -39,7 +41,9 @@ public class GUIManager : MonoBehaviour
         {
             planetsList.Add(body.name);
         }
+      
         dropDownPlanets.AddOptions(planetsList);
+        
 
         //Add listener for when the value of the Dropdown changes, to take action
         dropDownPlanets.onValueChanged.AddListener(delegate { UpdateCameraFollowPlanet(dropDownPlanets); });
@@ -115,5 +119,9 @@ public class GUIManager : MonoBehaviour
                 textYears.text = "Years: " + elapsedYears;
             }
         }
+    }
+    public void PlayButtonClicked()
+    {
+        cameraManager.setBodyToFollow(spaceship.transform);
     }
 }

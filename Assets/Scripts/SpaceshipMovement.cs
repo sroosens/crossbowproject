@@ -19,6 +19,6 @@ public class SpaceshipMovement : MonoBehaviour
       if ( Input.GetKey(KeyCode.Space))
         {
             transform.Translate(0, 0, speed + 5);
-        };
+        }
     }
 }

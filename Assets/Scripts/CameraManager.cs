@@ -7,6 +7,7 @@ public class CameraManager : MonoBehaviour
     public Transform Target;
     public Vector3 offset;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,5 +22,14 @@ public class CameraManager : MonoBehaviour
     public void setBodyToFollow(Transform _target)
     {
         Target = _target;
+        if (Target.tag == "Bodies")
+        {
+        offset.z = -25 * (Target.localScale.z / 12.74f);
+        }
+        else if (Target.tag == "Spaceship")
+        {
+            offset = new Vector3(0.1f, 0.4f, -2);
+        }
+       
     }
 }
