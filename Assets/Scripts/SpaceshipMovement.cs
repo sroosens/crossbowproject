@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class SpaceshipMovement : MonoBehaviour
 {
-    public float speed= 5;
+    public float speed;
+    public float rotationX;
+    public float rotationY;
     
     // Start is called before the first frame update
     void Start()
@@ -16,9 +18,12 @@ public class SpaceshipMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      if ( Input.GetKey(KeyCode.Space))
-        {
-            transform.Translate(0, 0, speed + 5);
-        }
+      speed += Input.GetAxis("Vertical")*Time.deltaTime;
+           transform.Translate(0,0,speed);
+        rotationX += Input.GetAxis("Mouse Y");
+        rotationY += Input.GetAxis("Mouse X");
+        rotationX = Mathf.Clamp(rotationX, -90, 90);
+        transform.rotation= Quaternion.Euler(rotationX,rotationY,0);
+       
     }
 }

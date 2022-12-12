@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class CameraManager : MonoBehaviour
 {
@@ -15,7 +16,12 @@ public class CameraManager : MonoBehaviour
     }
 
     private void LateUpdate()
-    {
+    {if (Target.tag== "Spaceship")
+        {  
+            transform.rotation = Target.rotation;
+            transform.position= Target.position+Target.TransformDirection(offset);
+        }
+      else 
         transform.position = Target.position + offset;
     }
 
@@ -28,7 +34,8 @@ public class CameraManager : MonoBehaviour
         }
         else if (Target.tag == "Spaceship")
         {
-            offset = new Vector3(0.1f, 0.4f, -2);
+            offset = new Vector3(0, 0.1f, -0.35f);
+            
         }
        
     }
