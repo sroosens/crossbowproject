@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.00034475198, g: 0.00032588153, b: 0.00035407927, a: 1}
+  m_IndirectSpecularColor: {r: 0.00034421525, g: 0.0003258775, b: 0.00035356748, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2417,6 +2417,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.76
       objectReference: {fileID: 0}
+    - target: {fileID: 1880132786503680105, guid: 17946d75fb84c8243ab482c5eaf349f2, type: 3}
+      propertyPath: invertInput
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1880132786503680105, guid: 17946d75fb84c8243ab482c5eaf349f2, type: 3}
+      propertyPath: invertMouseY
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5250749016617762491, guid: 17946d75fb84c8243ab482c5eaf349f2, type: 3}
       propertyPath: m_Name
       value: SpaceshipMesh
@@ -3107,7 +3115,7 @@ GameObject:
   - component: {fileID: 1494694603}
   - component: {fileID: 1494694602}
   m_Layer: 0
-  m_Name: Saturne
+  m_Name: Saturn
   m_TagString: Bodies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
