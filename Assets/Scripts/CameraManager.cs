@@ -16,27 +16,30 @@ public class CameraManager : MonoBehaviour
     }
 
     private void LateUpdate()
-    {if (Target.tag== "Spaceship")
-        {  
+    {
+        if (Target.tag == "Spaceship") // Spaceship
+        {
             transform.rotation = Target.rotation;
-            transform.position= Target.position+Target.TransformDirection(offset);
+            transform.position = Target.position + Target.TransformDirection(offset);
         }
-      else 
-        transform.position = Target.position + offset;
+        else // Celestials
+        {
+            transform.position = Target.position + offset;
+        }
     }
 
     public void setBodyToFollow(Transform _target)
     {
         Target = _target;
+
         if (Target.tag == "Bodies")
         {
-        offset.z = -25 * (Target.localScale.z / 12.74f);
+            // Calcul de l'offset en fct de la taille de la sphère
+            offset.z = -25 * (Target.localScale.z / 12.74f);
         }
         else if (Target.tag == "Spaceship")
         {
             offset = new Vector3(0, 0.1f, -0.35f);
-            
         }
-       
     }
 }
