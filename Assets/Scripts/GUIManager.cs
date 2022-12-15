@@ -14,6 +14,8 @@ public class GUIManager : MonoBehaviour
     public Text textHours;
     public Text textYears;
     public GameObject spaceship;
+    public Slider speedSlider;
+    public SolarSystemManager solarSystemManager;
     
 
     // Local Variables
@@ -45,8 +47,9 @@ public class GUIManager : MonoBehaviour
         dropDownPlanets.AddOptions(planetsList);
         
 
-        //Add listener for when the value of the Dropdown changes, to take action
+        //Add listeners for GUI objects
         dropDownPlanets.onValueChanged.AddListener(delegate { UpdateCameraFollowPlanet(dropDownPlanets); });
+        speedSlider.onValueChanged.AddListener(delegate { SpeedValueChanged(); });
     }
 
     // Update is called once per frame
@@ -123,5 +126,10 @@ public class GUIManager : MonoBehaviour
     public void PlayButtonClicked()
     {
         cameraManager.setBodyToFollow(spaceship.transform);
+    }
+
+    public void SpeedValueChanged()
+    {
+        solarSystemManager.SetSpeed(speedSlider.value);
     }
 }

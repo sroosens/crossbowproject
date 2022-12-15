@@ -17,6 +17,7 @@ public class SolarSystemManager : MonoBehaviour
 
     // Local Variables
     GameObject[] bodies; // Corps presents dans la scene
+    private float speed = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -132,6 +133,20 @@ public class SolarSystemManager : MonoBehaviour
         *         P / 3600
         */
         body.transform.Rotate(Vector3.up * ((Mathf.PI * 2) / GetRotationPeriodInHours(body.name)));
+    }
+
+    public void SetSpeed(float _speed)
+    {
+        // On efface la velocité existante
+        foreach (GameObject body in bodies)
+        {
+            body.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        }
+
+        G = _speed;
+
+        // On applique la vitesse orbitale initiale a tous les corps
+        ApplyInitialVelocityToBodies();
     }
 
     /*
