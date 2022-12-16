@@ -29,10 +29,10 @@ public class SpaceshipMovement : MonoBehaviour
         transform.Translate(0, 0, speed * 0.02f);
        
 
-        if(Input.GetAxis("Vertical")>0)
-        {
+/*        if(Input.GetAxis("Vertical")>0)
+        {*/
             boost.Play();
-        }
+/*        }*/
         
 
         // Si bouton droit pressé
