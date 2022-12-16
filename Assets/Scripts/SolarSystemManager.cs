@@ -14,6 +14,10 @@ public class SolarSystemManager : MonoBehaviour
 
     // Public Variables
     public float G; // Constante universelle de gravitation augmentee pour rendre la simulation plus rapide
+    public float simulationFactor = 0.25f; // Paramètre permettant de réduire les distances, masses etc pour que la visualisation reste possible
+
+    [SerializeField]
+    bool IsElepticalOrbit = true;
 
     // Local Variables
     GameObject[] bodies; // Corps presents dans la scene
@@ -25,14 +29,11 @@ public class SolarSystemManager : MonoBehaviour
         // On recupere tous les corps du systeme solaire
         bodies = GameObject.FindGameObjectsWithTag("Bodies");
 
-        // On applique la vitesse orbitale initiale a tous les corps
-        ApplyInitialVelocityToBodies();
-    }
+        // On applique les positions X basé sur les distances des corps par rapport au soleil
+        //ApplySunDistanceToBodies(); -> déjà appliqué dans le 3D
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // On applique la vitesse orbitale initiale a tous les corps
+        ApplyInitialOrbitSpeedToBodies();
     }
 
     private void FixedUpdate()
@@ -40,16 +41,45 @@ public class SolarSystemManager : MonoBehaviour
         ApplyPhysicsToBodies();
     }
 
+    void ApplySunDistanceToBodies()
+    {
+        print("Setup Positions");
+
+        foreach (GameObject body in bodies)
+        {
+            if (body.name != "Sun")
+            {
+                //Calculate the vector between the sun and the body
+                Vector3 dir = body.transform.position - GetSunBody().transform.position;
+
+                // On ajoute le rayon du soleil
+                dir.x += GetSunBody().transform.localScale.x / 2;
+
+                // On divise par par le facteur de simulation
+                dir.x *= simulationFactor;
+
+                // Si c'est la Lune, on la décale pour éviter d'apparaître dans la Terre
+                if (body.name == "Moon")
+                    dir.x -= 7;
+
+                //Translate the object in the direction of the vector
+                body.transform.position = dir;
+
+                print(body.name + " " + body.transform.position.x);
+            }
+        }
+    }
+
     /*
      * Applique la vitesse orbitale a tous les corps
      */
-    void ApplyInitialVelocityToBodies()
+    void ApplyInitialOrbitSpeedToBodies()
     {
         foreach (GameObject bodyA in bodies)
         {
             foreach (GameObject bodyB in bodies)
             {
-                if (!bodyA.Equals(bodyB))
+                if (!bodyA.Equals(bodyB) && bodyA.name != "Sun")
                 {
                     // On recupere la masse du corps B
                     float mB = bodyB.GetComponent<Rigidbody>().mass;
@@ -60,14 +90,28 @@ public class SolarSystemManager : MonoBehaviour
                     // On fait pointer le corps A en direction du corps B
                     bodyA.transform.LookAt(bodyB.transform);
 
-                    /* On applique la vitesse orbitale initiale au corps A
-                     * selon la formule,
-                     *
-                     *      v0 = Sqrt(G * m2)
-                     *                -----
-                     *                  d
-                    */
-                    bodyA.GetComponent<Rigidbody>().velocity += bodyA.transform.right * Mathf.Sqrt((G * mB) / d);
+                    if (!IsElepticalOrbit)
+                    {
+                        /* On applique la vitesse orbitale initiale au corps A
+                         * selon la formule,
+                         *
+                         *      v0 = Sqrt(G * m2)
+                         *                -----
+                         *                  d
+                        */
+                        bodyA.GetComponent<Rigidbody>().velocity += bodyA.transform.right * Mathf.Sqrt((G * mB * simulationFactor) / d);
+                    }
+                    else
+                    {
+                        /* On applique la vitesse orbitale eliptique initiale au corps A
+                         * selon la formule,
+                         *
+                         *      v0 = Sqrt(G * m2 * ( 2 -  1 ))
+                         *                           --   --
+                         *                           d    a
+                        */
+                        bodyA.GetComponent<Rigidbody>().velocity += bodyA.transform.right * Mathf.Sqrt((G * mB * simulationFactor) * ((2 / d) - (1 / (d * 1.5f))));
+                    }
                 }
             }
         }
@@ -117,7 +161,7 @@ public class SolarSystemManager : MonoBehaviour
          *              -----
          *               d^2
         */
-        bodyA.GetComponent<Rigidbody>().AddForce(dirVector * (G * (mA * mB) / (d * d)));
+        bodyA.GetComponent<Rigidbody>().AddForce(dirVector * (G * ((mA * mB) * simulationFactor) / (d * d)));
     }
 
     /*
@@ -132,7 +176,7 @@ public class SolarSystemManager : MonoBehaviour
         *         ------
         *         P / 3600
         */
-        body.transform.Rotate(Vector3.up * ((Mathf.PI * 2) / GetRotationPeriodInHours(body.name)));
+        body.transform.Rotate(Vector3.up * ((Mathf.PI * 2) / GetRotationPeriodInHours(body.name)) * Time.deltaTime);
     }
 
     public void SetSpeed(float _speed)
@@ -143,10 +187,30 @@ public class SolarSystemManager : MonoBehaviour
             body.GetComponent<Rigidbody>().velocity = Vector3.zero;
         }
 
-        G = _speed;
+        speed = _speed;
 
         // On applique la vitesse orbitale initiale a tous les corps
-        ApplyInitialVelocityToBodies();
+        ApplyInitialOrbitSpeedToBodies();
+    }
+
+    public float GetSunScale()
+    {
+        foreach (GameObject body in bodies)
+        {
+            if (body.name == "Sun")
+                return body.transform.localScale.x;
+        }
+        return 0f;
+    }
+
+    public GameObject GetSunBody()
+    {
+        foreach (GameObject body in bodies)
+        {
+            if (body.name == "Sun")
+                return body;
+        }
+        return null;
     }
 
     /*
@@ -156,7 +220,7 @@ public class SolarSystemManager : MonoBehaviour
     {
         float periodHours = 0;
 
-        switch(name)
+        switch (name)
         {
             case "Jupiter":
                 periodHours = 9;
@@ -241,4 +305,46 @@ public class SolarSystemManager : MonoBehaviour
         return periodDays;
     }
 
+    static public float GetDistanceToTheSunInMKm(string name)
+    {
+        float distance = 0;
+
+        switch (name)
+        {
+            case "Jupiter":
+                distance = 738.34f;
+                break;
+            case "Saturn":
+                distance = 1426.7f;
+                break;
+            case "Neptune":
+                distance = 4498.4f;
+                break;
+            case "Uranus":
+                distance = 2870.7f;
+                break;
+            case "Earth":
+                distance = 227.9f;
+                break;
+            case "Mars":
+                distance = 227.9f;
+                break;
+            case "Sun":
+                distance = 0f;
+                break;
+            case "Moon":
+                distance = 149.6f;
+                break;
+            case "Mercury":
+                distance = 57.9f;
+                break;
+            case "Venus":
+                distance = 108.2f;
+                break;
+            default:
+                distance = 227.9f;
+                break;
+        }
+        return distance;
+    }
 }
