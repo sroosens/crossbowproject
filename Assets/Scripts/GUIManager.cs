@@ -16,6 +16,7 @@ public class GUIManager : MonoBehaviour
     public GameObject spaceship;
     public Slider speedSlider;
     public SolarSystemManager solarSystemManager;
+    public Text textSpeedVal;
     
 
     // Local Variables
@@ -50,6 +51,8 @@ public class GUIManager : MonoBehaviour
         //Add listeners for GUI objects
         dropDownPlanets.onValueChanged.AddListener(delegate { UpdateCameraFollowPlanet(dropDownPlanets); });
         speedSlider.onValueChanged.AddListener(delegate { SpeedValueChanged(); });
+
+        SpeedValueChanged();
     }
 
     // Update is called once per frame
@@ -120,6 +123,9 @@ public class GUIManager : MonoBehaviour
                 textDays.text = "Days: " + elapsedDays;
                 textHours.text = "Hours: " + elapsedHours;
                 textYears.text = "Years: " + elapsedYears;
+
+                // On sort de foreach
+                break;
             }
         }
     }
@@ -130,6 +136,9 @@ public class GUIManager : MonoBehaviour
 
     public void SpeedValueChanged()
     {
-        solarSystemManager.SetSpeed(speedSlider.value);
+        float value = speedSlider.value;
+
+        solarSystemManager.SetSpeed(value);
+        textSpeedVal.text = value.ToString();
     }
 }
