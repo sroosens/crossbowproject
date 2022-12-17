@@ -161,6 +161,16 @@ public class SolarSystemManager : MonoBehaviour
         return 0f;
     }
 
+    public GameObject GetCelestial(string name)
+    {
+        foreach (GameObject body in bodies)
+        {
+            if (body.name == name)
+                return body;
+        }
+        return null;
+    }
+
     public GameObject GetSun()
     {
         foreach (GameObject body in bodies)

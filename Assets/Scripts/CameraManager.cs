@@ -34,12 +34,13 @@ public class CameraManager : MonoBehaviour
 
         if (Target.tag == "Bodies")
         {
+            offset = Vector3.zero;
             // Calcul de l'offset en fct de la taille de la sphère
             offset.z = -25 * (Target.localScale.z / 12.74f);
         }
         else if (Target.tag == "Spaceship")
         {
-            offset = new Vector3(0, 0.1f, -0.35f);
+            offset = new Vector3(0.0128f, 0.05f, -0.20f);
         }
     }
 }
