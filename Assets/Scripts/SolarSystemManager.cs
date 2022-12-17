@@ -21,7 +21,6 @@ public class SolarSystemManager : MonoBehaviour
 
     // Local Variables
     GameObject[] bodies; // Corps presents dans la scene
-    private float speed = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -29,45 +28,13 @@ public class SolarSystemManager : MonoBehaviour
         // On recupere tous les corps du systeme solaire
         bodies = GameObject.FindGameObjectsWithTag("Bodies");
 
-        // On applique les positions X basé sur les distances des corps par rapport au soleil
-        //ApplySunDistanceToBodies(); -> déjà appliqué dans le 3D
-
-        // On applique la vitesse orbitale initiale a tous les corps
+        // On applique la vitesse orbitale initiale a tous les corps sauf la Lune
         ApplyInitialOrbitSpeedToBodies();
     }
 
     private void FixedUpdate()
     {
         ApplyPhysicsToBodies();
-    }
-
-    void ApplySunDistanceToBodies()
-    {
-        print("Setup Positions");
-
-        foreach (GameObject body in bodies)
-        {
-            if (body.name != "Sun")
-            {
-                //Calculate the vector between the sun and the body
-                Vector3 dir = body.transform.position - GetSunBody().transform.position;
-
-                // On ajoute le rayon du soleil
-                dir.x += GetSunBody().transform.localScale.x / 2;
-
-                // On divise par par le facteur de simulation
-                dir.x *= simulationFactor;
-
-                // Si c'est la Lune, on la décale pour éviter d'apparaître dans la Terre
-                if (body.name == "Moon")
-                    dir.x -= 7;
-
-                //Translate the object in the direction of the vector
-                body.transform.position = dir;
-
-                print(body.name + " " + body.transform.position.x);
-            }
-        }
     }
 
     /*
@@ -79,7 +46,7 @@ public class SolarSystemManager : MonoBehaviour
         {
             foreach (GameObject bodyB in bodies)
             {
-                if (!bodyA.Equals(bodyB) && bodyA.name != "Sun")
+                if (!bodyA.Equals(bodyB))
                 {
                     // On recupere la masse du corps B
                     float mB = bodyB.GetComponent<Rigidbody>().mass;
@@ -128,7 +95,6 @@ public class SolarSystemManager : MonoBehaviour
             {
                 if (!bodyA.Equals(bodyB))
                 {
-
                     // On applique les forces de gravitation
                     ApplyGravity(bodyA, bodyB);
 
@@ -176,7 +142,7 @@ public class SolarSystemManager : MonoBehaviour
         *         ------
         *         P / 3600
         */
-        body.transform.Rotate(Vector3.up * ((Mathf.PI * 2) / GetRotationPeriodInHours(body.name)));
+        body.transform.Rotate(Vector3.up * ((Mathf.PI * 2) / GetRotationPeriodInHours(body.name)) * Time.fixedDeltaTime);
     }
 
     public void SetSpeed(float _speed)
@@ -195,11 +161,21 @@ public class SolarSystemManager : MonoBehaviour
         return 0f;
     }
 
-    public GameObject GetSunBody()
+    public GameObject GetSun()
     {
         foreach (GameObject body in bodies)
         {
             if (body.name == "Sun")
+                return body;
+        }
+        return null;
+    }
+
+    public GameObject GetEarth()
+    {
+        foreach (GameObject body in bodies)
+        {
+            if (body.name == "Earth")
                 return body;
         }
         return null;
@@ -297,6 +273,9 @@ public class SolarSystemManager : MonoBehaviour
         return periodDays;
     }
 
+    /*
+     * not used
+     */
     static public float GetDistanceToTheSunInMKm(string name)
     {
         float distance = 0;
