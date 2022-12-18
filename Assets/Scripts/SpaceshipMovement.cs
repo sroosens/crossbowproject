@@ -50,4 +50,9 @@ public class SpaceshipMovement : MonoBehaviour
             }
         }
     }
+
+    public float GetSpeed()
+    { 
+        return speed;
+    }
 }

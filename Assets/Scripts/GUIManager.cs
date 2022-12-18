@@ -18,6 +18,7 @@ public class GUIManager : MonoBehaviour
     public Text textDistanceObj;
     public Text textObj;
     public Text playBtn;
+    public Text textSpaceshipSpeed;
 
     public GameObject spaceship;
     public Dropdown dropDownPlanets;
@@ -32,13 +33,6 @@ public class GUIManager : MonoBehaviour
     GameObject curBody;
     List<string> planetsList;
     bool playModeON = false;
-
-
-    // Local Variables for Test
-    int elapsedHours = 0;
-    int elapsedDays = 0;
-    int elapsedYears = 0;
-    bool hourReached = false;
 
     // Start is called before the first frame update
     void Start()
@@ -62,12 +56,6 @@ public class GUIManager : MonoBehaviour
         SpeedValueChanged();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        UpdateTimePassed();
-    }
-
     private void FixedUpdate()
     {
         if (objectivesManager.initOK() && GetPlayModeON())
@@ -77,6 +65,7 @@ public class GUIManager : MonoBehaviour
             Vector3 objPos = solarSystemManager.GetCelestial(objectivesManager.GetCurObjective().name).transform.position;
             Vector3 spaceShipPos = spaceship.transform.position;
             double dist = Math.Round(Vector3.Distance(spaceShipPos, objPos) * solarSystemManager.simulationFactor, 1);
+            double spaceSpeed = Math.Round((spaceship.GetComponent<SpaceshipMovement>().GetSpeed()), 0);
 
             // Calcule et affiche la direction de l'objectif
             dir = spaceship.transform.InverseTransformPoint(objPos);
@@ -94,7 +83,11 @@ public class GUIManager : MonoBehaviour
                 objectivesManager.SetObjectiveReached(objectivesManager.GetCurObjective());
                 objectivesManager.GetNextObjective();
             }
+
+            textSpaceshipSpeed.text = "Ship Speed: " + spaceSpeed.ToString() + " mKm/s";
         }
+
+        UpdateTimePassed();
     }
 
     void UpdateCameraFollowPlanet(Dropdown dropdown)
@@ -114,56 +107,14 @@ public class GUIManager : MonoBehaviour
 
     void UpdateTimePassed()
     {
-        foreach (GameObject body in bodies)
-        {
-            if (body.name.Equals("Earth")) //Test uniquement sur la Terre, faudrait que ça soit lie au corps qu'on regarde
-            {
-                // On recupere l'angle de rotation actuel
-                float curAngleDeg = Mathf.Abs(body.transform.eulerAngles.y);
+        int days = solarSystemManager.GetEarthDays();
+        int hours = solarSystemManager.GetEarthHours();
+        int years = solarSystemManager.GetEarthYears();
 
-                // On recupere le temps necessaire au corps pour effectuer
-                // une rotation sur lui même
-                float rotationPeriodHours = SolarSystemManager.GetRotationPeriodInHours("Earth");
-
-                // On recupere le temps necessaire au corps pour effectuer
-                // une revolution autour du soleil
-                float orbitalPeriodDays = SolarSystemManager.GetOrbitalPeriodInDays("Earth");
-
-                // On teste si l'angle actuel est equivalent a 1 heure terrestre
-                // passee sur le corps en fonction de son temps de revolution
-                if ((curAngleDeg % (360 / rotationPeriodHours)) > 1)
-                {
-                    hourReached = false;
-                }
-                if ((curAngleDeg % (360 / rotationPeriodHours) < 1) && !hourReached)
-                {
-                    elapsedHours += 1;
-                    hourReached = true;
-                }
-
-                // 1 jour = 1 rotation complete du corps
-                if (elapsedHours > rotationPeriodHours)
-                {
-                    elapsedHours = 0;
-                    elapsedDays += 1;
-                }
-
-                // 1 an = 1 revolution complete du corps autour du soleil
-                if (elapsedDays > orbitalPeriodDays)
-                {
-                    elapsedDays = 0;
-                    elapsedYears += 1;
-                }
-
-                // On met a jour l'affichage
-                textDays.text = "Days: " + elapsedDays;
-                textHours.text = "Hours: " + elapsedHours;
-                textYears.text = "Years: " + elapsedYears;
-
-                // On sort de foreach
-                break;
-            }
-        }
+        // On met a jour l'affichage
+        textDays.text = "Days: " + days;
+        textHours.text = "Hours: " + hours;
+        textYears.text = "Years: " + years;
     }
     public void PlayButtonClicked()
     {
@@ -174,9 +125,7 @@ public class GUIManager : MonoBehaviour
             playBtn.text = "Exit Play Mode";
 
             // Show UI related
-            textObj.gameObject.SetActive(true);
-            textDistanceObj.gameObject.SetActive(true);
-            arrow.gameObject.SetActive(true);
+            ShowSpaceShipUI();
         }
         else
         {
@@ -185,9 +134,7 @@ public class GUIManager : MonoBehaviour
             playBtn.text = "Enter Play Mode";
 
             // Hide UI related
-            textObj.gameObject.SetActive(false);
-            textDistanceObj.gameObject.SetActive(false);
-            arrow.gameObject.SetActive(false);
+            HideSpaceShipUI();
         }
     }
 
@@ -196,11 +143,27 @@ public class GUIManager : MonoBehaviour
         float value = speedSlider.value;
 
         solarSystemManager.SetSpeed(value);
-        textSpeedVal.text = value.ToString();
+        textSpeedVal.text = "x" + value.ToString();
     }
 
     public bool GetPlayModeON()
     {
         return playModeON;
+    }
+
+    protected void ShowSpaceShipUI()
+    {
+        textSpaceshipSpeed.gameObject.SetActive(true);
+        textObj.gameObject.SetActive(true);
+        textDistanceObj.gameObject.SetActive(true);
+        arrow.gameObject.SetActive(true);
+    }
+
+    protected void HideSpaceShipUI()
+    {
+        textSpaceshipSpeed.gameObject.SetActive(false);
+        textObj.gameObject.SetActive(false);
+        textDistanceObj.gameObject.SetActive(false);
+        arrow.gameObject.SetActive(false);
     }
 }

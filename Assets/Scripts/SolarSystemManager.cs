@@ -21,6 +21,10 @@ public class SolarSystemManager : MonoBehaviour
 
     // Local Variables
     GameObject[] bodies; // Corps presents dans la scene
+    int elapsedHours = 0;
+    int elapsedDays = 0;
+    int elapsedYears = 0;
+    bool hourReached = false;
 
     // Start is called before the first frame update
     void Start()
@@ -142,7 +146,12 @@ public class SolarSystemManager : MonoBehaviour
         *         ------
         *         P / 3600
         */
-        body.transform.Rotate(Vector3.up * ((Mathf.PI * 2) / GetRotationPeriodInHours(body.name)) * Time.fixedDeltaTime);
+        body.transform.Rotate(Vector3.up * ((Mathf.PI * 2) / GetRotationPeriodInHours(body.name)) * Time.fixedDeltaTime * 50);
+
+        if(body.name == "Earth")
+        {
+            IncrementEarthTime(Mathf.Abs(body.transform.eulerAngles.y));
+        }
     }
 
     public void SetSpeed(float _speed)
@@ -190,6 +199,59 @@ public class SolarSystemManager : MonoBehaviour
         }
         return null;
     }
+
+    protected void IncrementEarthTime(float angle)
+    {
+        // On recupere le temps necessaire au corps pour effectuer
+        // une rotation sur lui même
+        float rotationPeriodHours = SolarSystemManager.GetRotationPeriodInHours("Earth");
+
+        // On recupere le temps necessaire au corps pour effectuer
+        // une revolution autour du soleil
+        float orbitalPeriodDays = SolarSystemManager.GetOrbitalPeriodInDays("Earth");
+
+        // On teste si l'angle actuel est equivalent a 1 heure terrestre
+        // passee sur le corps en fonction de son temps de revolution
+        if ((angle % (360 / rotationPeriodHours)) > 1)
+        {
+            hourReached = false;
+        }
+        if ((angle % (360 / rotationPeriodHours) < 1) && !hourReached)
+        {
+            elapsedHours += 1;
+            hourReached = true;
+        }
+
+        // 1 jour = 1 rotation complete du corps
+        if (elapsedHours > rotationPeriodHours)
+        {
+            elapsedHours = 0;
+            elapsedDays += 1;
+        }
+
+        // 1 an = 1 revolution complete du corps autour du soleil
+        if (elapsedDays > orbitalPeriodDays)
+        {
+            elapsedDays = 0;
+            elapsedYears += 1;
+        }
+    }
+
+    public int GetEarthHours()
+    {
+        return elapsedHours;
+    }
+
+    public int GetEarthDays()
+    {
+        return elapsedDays;
+    }
+
+    public int GetEarthYears()
+    {
+        return elapsedYears;
+    }
+
 
     /*
      * Obtient la periode de rotation du corps en heures
