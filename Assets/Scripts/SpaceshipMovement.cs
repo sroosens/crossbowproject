@@ -59,4 +59,17 @@ public class SpaceshipMovement : MonoBehaviour
     { 
         return speed;
     }
+
+    /* TODO: Pierre
+    // Obtenir l'input de l'utilisateur pour contrôler les moteurs du vaisseau spatial
+    float thrustInput = Input.GetAxis("Thrust");
+
+    // Loi 1
+    // Appliquer une force de poussée vers l'avant au vaisseau spatial en utilisant les moteurs
+    rigidbody.AddForce(Vector3.forward* thrustInput * thrustForce);
+
+    // Loi 3
+    // Appliquer une force égale et opposée sur l'objet qui exerce la force (dans ce cas, les moteurs)
+    engines.AddForce(-Vector3.forward* thrustInput * thrustForce);
+    */
 }
