@@ -19,7 +19,9 @@ public class SpaceshipMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-   
+        speed = 0;
+        rotationX = 0;
+        rotationY = 0;
     }
 
     // Update is called once per frame
@@ -33,9 +35,9 @@ public class SpaceshipMovement : MonoBehaviour
 
 
             /*        if(Input.GetAxis("Vertical")>0)
-                    {*/
+                    {*//*
             boost.Play();
-            /*        }*/
+            *//*        }*/
 
 
             // Si bouton droit pressé
@@ -44,6 +46,8 @@ public class SpaceshipMovement : MonoBehaviour
                 // On récupère les rotations X, Y de la souris
                 rotationX += Input.GetAxis("Mouse Y") * (invertMouseY ? -1 : 1);
                 rotationY += Input.GetAxis("Mouse X");
+
+                rotationX = Mathf.Clamp(rotationX, -90, 90);
 
                 // On effectue une rotation d'Euler sur le vaisseau
                 transform.rotation = Quaternion.Euler(rotationX, rotationY, 0);

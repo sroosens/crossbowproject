@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using static ObjectivesManager;
+using static UnityEngine.GraphicsBuffer;
 
 public class GUIManager : MonoBehaviour
 {
@@ -62,13 +63,13 @@ public class GUIManager : MonoBehaviour
         {
             Vector3 dir;
             float a;
-            Vector3 objPos = solarSystemManager.GetCelestial(objectivesManager.GetCurObjective().name).transform.position;
+            Transform celestial = solarSystemManager.GetCelestial(objectivesManager.GetCurObjective().name).transform;
             Vector3 spaceShipPos = spaceship.transform.position;
-            double dist = Math.Round(Vector3.Distance(spaceShipPos, objPos) * solarSystemManager.simulationFactor, 1);
+            double dist = Math.Round(Vector3.Distance(spaceShipPos, celestial.position) * solarSystemManager.simulationFactor, 1);
             double spaceSpeed = Math.Round((spaceship.GetComponent<SpaceshipMovement>().GetSpeed()), 0);
 
             // Calcule et affiche la direction de l'objectif
-            dir = spaceship.transform.InverseTransformPoint(objPos);
+            dir = spaceship.transform.InverseTransformPoint(celestial.position);
             a = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
             a += 180;
             arrow.transform.localEulerAngles = new Vector3(0, 180, a);
@@ -78,7 +79,7 @@ public class GUIManager : MonoBehaviour
             textObj.text = "Find " + objectivesManager.GetCurObjective().name;
 
             // Objectif atteint
-            if (dist < 10f)
+            if (dist < 10f * (celestial.localScale.z / 12.74f))
             {
                 objectivesManager.SetObjectiveReached(objectivesManager.GetCurObjective());
                 objectivesManager.GetNextObjective();
