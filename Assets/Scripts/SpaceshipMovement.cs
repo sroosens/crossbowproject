@@ -13,6 +13,7 @@ public class SpaceshipMovement : MonoBehaviour
     public float rotationY;
     public bool  invertMouseY;
     public ParticleSystem boost;
+    public GUIManager GUIManager;
     
     
     // Start is called before the first frame update
@@ -24,26 +25,29 @@ public class SpaceshipMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // On applique une vitesse au vaisseau
-        speed += Input.GetAxis("Vertical") * Time.deltaTime; 
-        transform.Translate(0, 0, speed * 0.02f);
-       
-
-/*        if(Input.GetAxis("Vertical")>0)
-        {*/
-            boost.Play();
-/*        }*/
-        
-
-        // Si bouton droit pressé
-        if (Input.GetMouseButton(1))
+        if (GUIManager.GetPlayModeON())
         {
-            // On récupère les rotations X, Y de la souris
-            rotationX += Input.GetAxis("Mouse Y") * (invertMouseY ? -1 : 1);
-            rotationY += Input.GetAxis("Mouse X");
+            // On applique une vitesse au vaisseau
+            speed += Input.GetAxis("Vertical") * Time.deltaTime;
+            transform.Translate(0, 0, speed * 0.02f);
 
-            // On effectue une rotation d'Euler sur le vaisseau
-            transform.rotation = Quaternion.Euler(rotationX, rotationY, 0);
+
+            /*        if(Input.GetAxis("Vertical")>0)
+                    {*/
+            boost.Play();
+            /*        }*/
+
+
+            // Si bouton droit pressé
+            if (Input.GetMouseButton(1))
+            {
+                // On récupère les rotations X, Y de la souris
+                rotationX += Input.GetAxis("Mouse Y") * (invertMouseY ? -1 : 1);
+                rotationY += Input.GetAxis("Mouse X");
+
+                // On effectue une rotation d'Euler sur le vaisseau
+                transform.rotation = Quaternion.Euler(rotationX, rotationY, 0);
+            }
         }
     }
 }

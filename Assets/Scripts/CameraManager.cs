@@ -35,6 +35,8 @@ public class CameraManager : MonoBehaviour
         if (Target.tag == "Bodies")
         {
             offset = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+
             // Calcul de l'offset en fct de la taille de la sphère
             offset.z = -25 * (Target.localScale.z / 12.74f);
         }

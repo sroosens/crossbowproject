@@ -17,6 +17,7 @@ public class GUIManager : MonoBehaviour
     public Transform arrow;
     public Text textDistanceObj;
     public Text textObj;
+    public Text playBtn;
 
     public GameObject spaceship;
     public Dropdown dropDownPlanets;
@@ -30,6 +31,7 @@ public class GUIManager : MonoBehaviour
     GameObject[] bodies; // Corps presents dans la scene
     GameObject curBody;
     List<string> planetsList;
+    bool playModeON = false;
 
 
     // Local Variables for Test
@@ -43,8 +45,6 @@ public class GUIManager : MonoBehaviour
     {
         planetsList = new List<string>();
 
-
-
         // On recupere tous les corps du systeme solaire
         bodies = GameObject.FindGameObjectsWithTag("Bodies");
 
@@ -55,7 +55,6 @@ public class GUIManager : MonoBehaviour
         }
 
         dropDownPlanets.AddOptions(planetsList);
-
 
         //Add listeners for GUI objects
         dropDownPlanets.onValueChanged.AddListener(delegate { UpdateCameraFollowPlanet(dropDownPlanets); });
@@ -71,7 +70,7 @@ public class GUIManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (objectivesManager.initOK())
+        if (objectivesManager.initOK() && GetPlayModeON())
         {
             Vector3 dir;
             float a;
@@ -168,7 +167,28 @@ public class GUIManager : MonoBehaviour
     }
     public void PlayButtonClicked()
     {
-        cameraManager.setBodyToFollow(spaceship.transform);
+        if (!playModeON)
+        {
+            playModeON = true;
+            cameraManager.setBodyToFollow(spaceship.transform);
+            playBtn.text = "Exit Play Mode";
+
+            // Show UI related
+            textObj.gameObject.SetActive(true);
+            textDistanceObj.gameObject.SetActive(true);
+            arrow.gameObject.SetActive(true);
+        }
+        else
+        {
+            playModeON = false;
+            cameraManager.setBodyToFollow(solarSystemManager.GetEarth().transform);
+            playBtn.text = "Enter Play Mode";
+
+            // Hide UI related
+            textObj.gameObject.SetActive(false);
+            textDistanceObj.gameObject.SetActive(false);
+            arrow.gameObject.SetActive(false);
+        }
     }
 
     public void SpeedValueChanged()
@@ -177,5 +197,10 @@ public class GUIManager : MonoBehaviour
 
         solarSystemManager.SetSpeed(value);
         textSpeedVal.text = value.ToString();
+    }
+
+    public bool GetPlayModeON()
+    {
+        return playModeON;
     }
 }
