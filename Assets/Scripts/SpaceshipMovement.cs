@@ -16,6 +16,9 @@ public class SpaceshipMovement : MonoBehaviour
     public ParticleSystem thrust1;
     public ParticleSystem thrust2;
     public ParticleSystem thrust3;
+    public ParticleSystem Boostthrust;
+    public ParticleSystem BoostthrustL;
+    public ParticleSystem BoostthrustR;
     public GUIManager GUIManager;
     
     
@@ -34,18 +37,33 @@ public class SpaceshipMovement : MonoBehaviour
         {
             // On applique une vitesse au vaisseau
             thrust=Input.GetAxis("Vertical") * Time.deltaTime;
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                thrust = thrust * 2;
+            }
             speed += thrust;
             transform.Translate(0, 0, speed * 0.02f);
 
 
             if(thrust>0)
             {
-            thrust1.Play();
+                thrust1.Play();
+                if(Input.GetKey(KeyCode.LeftShift))
+                {
+                    Boostthrust.Play();
+                }
+            
+                    
             }
             else if (thrust<0)
             {
                 thrust2.Play();
                 thrust3.Play();
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    BoostthrustL.Play();
+                    BoostthrustR.Play();
+                }
 
             }
             
