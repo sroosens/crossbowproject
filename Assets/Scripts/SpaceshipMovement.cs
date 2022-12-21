@@ -8,11 +8,14 @@ using UnityEngine.UIElements;
 
 public class SpaceshipMovement : MonoBehaviour
 {
+    public float thrust;
     public float speed;
     public float rotationX;
     public float rotationY;
     public bool  invertMouseY;
-    public ParticleSystem boost;
+    public ParticleSystem thrust1;
+    public ParticleSystem thrust2;
+    public ParticleSystem thrust3;
     public GUIManager GUIManager;
     
     
@@ -30,14 +33,24 @@ public class SpaceshipMovement : MonoBehaviour
         if (GUIManager.GetPlayModeON())
         {
             // On applique une vitesse au vaisseau
-            speed += Input.GetAxis("Vertical") * Time.deltaTime;
+            thrust=Input.GetAxis("Vertical") * Time.deltaTime;
+            speed += thrust;
             transform.Translate(0, 0, speed * 0.02f);
 
 
-            /*        if(Input.GetAxis("Vertical")>0)
-                    {*//*
-            boost.Play();
-            *//*        }*/
+            if(thrust>0)
+            {
+            thrust1.Play();
+            }
+            else if (thrust<0)
+            {
+                thrust2.Play();
+                thrust3.Play();
+
+            }
+            
+            
+                  
 
 
             // Si bouton droit pressé

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Bodies
   - Spaceship
+  - Thrust1
+  - Thrust2
   layers:
   - Default
   - TransparentFX
