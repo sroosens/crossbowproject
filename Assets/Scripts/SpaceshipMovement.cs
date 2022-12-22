@@ -35,25 +35,25 @@ public class SpaceshipMovement : MonoBehaviour
     {
         if (GUIManager.GetPlayModeON())
         {
-            // On applique une vitesse au vaisseau
+            // On applique une poussée positive ou négative au vaisseau ( 3ème loi de Newton)
             thrust=Input.GetAxis("Vertical") * Time.deltaTime;
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 thrust = thrust * 2;
             }
-            speed += thrust;
-            transform.Translate(0, 0, speed * 0.02f);
-
-
+            speed += thrust; // La poussé modifie la vitesse ( 2ème loi de Newton)
+            transform.Translate(0, 0, speed * 0.02f); 
+            /*Le vide spatial n'entraîne pas de frottement donc s' il n'y a pas de poussée
+             le système est en inertie donc la vitesse ne change pas (1ère loi de Newton) */
+             
+            // systèmes de particules
             if(thrust>0)
             {
                 thrust1.Play();
                 if(Input.GetKey(KeyCode.LeftShift))
                 {
                     Boostthrust.Play();
-                }
-            
-                    
+                }      
             }
             else if (thrust<0)
             {
@@ -66,10 +66,6 @@ public class SpaceshipMovement : MonoBehaviour
                 }
 
             }
-            
-            
-                  
-
 
             // Si bouton droit pressé
             if (Input.GetMouseButton(1))
@@ -91,16 +87,5 @@ public class SpaceshipMovement : MonoBehaviour
         return speed;
     }
 
-    /* TODO: Pierre
-    // Obtenir l'input de l'utilisateur pour contrôler les moteurs du vaisseau spatial
-    float thrustInput = Input.GetAxis("Thrust");
-
-    // Loi 1
-    // Appliquer une force de poussée vers l'avant au vaisseau spatial en utilisant les moteurs
-    rigidbody.AddForce(Vector3.forward* thrustInput * thrustForce);
-
-    // Loi 3
-    // Appliquer une force égale et opposée sur l'objet qui exerce la force (dans ce cas, les moteurs)
-    engines.AddForce(-Vector3.forward* thrustInput * thrustForce);
-    */
+   
 }
